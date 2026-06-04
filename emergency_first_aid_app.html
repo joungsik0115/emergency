@@ -1,0 +1,273 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.app{max-width:680px;margin:0 auto;padding:0 0 2rem}
+.topbar{background:#1a73e8;padding:14px 20px;display:flex;align-items:center;gap:12px;border-radius:0 0 0 0}
+.topbar-title{color:#fff;font-size:18px;font-weight:500}
+.topbar-sub{color:rgba(255,255,255,0.8);font-size:13px}
+.search-wrap{background:#1a73e8;padding:0 16px 16px;position:relative}
+.search-input{width:100%;padding:10px 16px 10px 40px;border-radius:24px;border:none;font-size:14px;background:#fff;color:#202124;outline:none}
+.search-icon{position:absolute;left:28px;top:50%;transform:translateY(-50%);color:#5f6368;font-size:18px}
+.emergency-bar{background:#d93025;margin:0;padding:12px 20px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.emergency-bar:hover{background:#b31412}
+.emergency-bar span{color:#fff;font-size:14px;font-weight:500}
+.section-title{font-size:13px;font-weight:500;color:#5f6368;text-transform:uppercase;letter-spacing:.08em;padding:16px 20px 8px}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 4px}
+.cat-card{border-radius:16px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;border:none;transition:transform .12s,opacity .12s}
+.cat-card:hover{transform:scale(1.04);opacity:.92}
+.cat-card .icon{font-size:28px}
+.cat-card .label{font-size:13px;font-weight:500;text-align:center;line-height:1.3}
+.c1{background:#e8f0fe;color:#1a73e8}
+.c2{background:#fce8e6;color:#d93025}
+.c3{background:#e6f4ea;color:#1e8e3e}
+.c4{background:#fff3e0;color:#e37400}
+.c5{background:#f3e8fd;color:#7b1fa2}
+.c6{background:#e0f7fa;color:#00838f}
+.guide-list{padding:0 16px;display:flex;flex-direction:column;gap:8px}
+.guide-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:background .12s}
+.guide-card:hover{background:var(--color-background-secondary)}
+.guide-icon-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+.guide-info{flex:1}
+.guide-title{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.guide-sub{font-size:12px;color:var(--color-text-secondary)}
+.badge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;white-space:nowrap}
+.badge-red{background:#fce8e6;color:#d93025}
+.badge-amber{background:#fff3e0;color:#e37400}
+.badge-green{background:#e6f4ea;color:#1e8e3e}
+.detail-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.45);align-items:center;justify-content:center}
+.detail-overlay.open{display:flex}
+.detail-box{background:var(--color-background-primary);border-radius:20px;padding:24px;max-width:580px;width:92%;max-height:80vh;overflow-y:auto;position:relative}
+.detail-close{position:absolute;top:14px;right:14px;background:var(--color-background-secondary);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--color-text-secondary)}
+.detail-close:hover{background:var(--color-border-tertiary)}
+.detail-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.detail-icon-big{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0}
+.detail-title-wrap .detail-title{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.detail-title-wrap .detail-badge{margin-top:4px;display:inline-block}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{display:flex;gap:12px;align-items:flex-start}
+.step-num{width:28px;height:28px;border-radius:50%;background:#1a73e8;color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:14px;color:var(--color-text-primary);line-height:1.6;padding-top:4px}
+.step-warn{background:#fce8e6;border-radius:10px;padding:10px 14px;font-size:13px;color:#d93025;margin-top:4px;display:flex;gap:8px;align-items:flex-start}
+.tip-box{background:#e8f0fe;border-radius:10px;padding:12px 14px;font-size:13px;color:#1a73e8;margin-top:12px}
+.tip-title{font-weight:500;margin-bottom:4px}
+.bottom-nav{position:sticky;bottom:0;background:var(--color-background-primary);border-top:0.5px solid var(--color-border-tertiary);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 0 4px}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;cursor:pointer;background:none;border:none;color:var(--color-text-secondary);font-size:11px;transition:color .1s}
+.nav-btn.active{color:#1a73e8}
+.nav-btn i{font-size:22px}
+</style>
+
+<h2 class="sr-only">응급처치 가이드 앱 — 상황별 응급 대처 방법을 확인하세요</h2>
+
+<div class="app">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">응급처치 가이드</div>
+      <div class="topbar-sub">빠른 대처가 생명을 구합니다</div>
+    </div>
+    <i class="ti ti-heart-pulse" style="font-size:28px;color:rgba(255,255,255,0.85);margin-left:auto" aria-hidden="true"></i>
+  </div>
+
+  <div class="search-wrap">
+    <i class="ti ti-search search-icon" aria-hidden="true"></i>
+    <input class="search-input" type="text" placeholder="증상 또는 상황을 검색하세요" id="searchInput" />
+  </div>
+
+  <div class="emergency-bar" onclick="openDetail('cardiac')">
+    <i class="ti ti-alert-triangle" style="font-size:20px;color:#fff" aria-hidden="true"></i>
+    <span>심정지 발생 시 즉시 확인하세요 →</span>
+  </div>
+
+  <div class="section-title">상황별 빠른 선택</div>
+  <div class="cat-grid">
+    <button class="cat-card c1" onclick="openDetail('cardiac')">
+      <span class="icon">❤️</span><span class="label">심폐소생<br>CPR</span>
+    </button>
+    <button class="cat-card c2" onclick="openDetail('choking')">
+      <span class="icon">🫁</span><span class="label">기도폐쇄<br>하임리히</span>
+    </button>
+    <button class="cat-card c3" onclick="openDetail('burn')">
+      <span class="icon">🔥</span><span class="label">화상<br>처치</span>
+    </button>
+    <button class="cat-card c4" onclick="openDetail('fracture')">
+      <span class="icon">🦴</span><span class="label">골절<br>고정</span>
+    </button>
+    <button class="cat-card c5" onclick="openDetail('bleeding')">
+      <span class="icon">🩸</span><span class="label">출혈<br>지혈</span>
+    </button>
+    <button class="cat-card c6" onclick="openDetail('shock')">
+      <span class="icon">⚡</span><span class="label">쇼크<br>대응</span>
+    </button>
+  </div>
+
+  <div class="section-title" style="margin-top:8px">자주 찾는 응급처치</div>
+  <div class="guide-list" id="guideList">
+    <div class="guide-card" onclick="openDetail('cardiac')">
+      <div class="guide-icon-wrap" style="background:#fce8e6"><span style="font-size:22px">❤️</span></div>
+      <div class="guide-info">
+        <div class="guide-title">심폐소생술 (CPR)</div>
+        <div class="guide-sub">의식·호흡 없을 때 즉시 시행</div>
+      </div>
+      <span class="badge badge-red">긴급</span>
+    </div>
+    <div class="guide-card" onclick="openDetail('choking')">
+      <div class="guide-icon-wrap" style="background:#fff3e0"><span style="font-size:22px">🫁</span></div>
+      <div class="guide-info">
+        <div class="guide-title">기도폐쇄 / 하임리히법</div>
+        <div class="guide-sub">음식·이물질로 숨을 못 쉴 때</div>
+      </div>
+      <span class="badge badge-red">긴급</span>
+    </div>
+    <div class="guide-card" onclick="openDetail('burn')">
+      <div class="guide-icon-wrap" style="background:#e6f4ea"><span style="font-size:22px">🔥</span></div>
+      <div class="guide-info">
+        <div class="guide-title">화상 응급처치</div>
+        <div class="guide-sub">열, 화학물질, 전기 화상</div>
+      </div>
+      <span class="badge badge-amber">주의</span>
+    </div>
+    <div class="guide-card" onclick="openDetail('bleeding')">
+      <div class="guide-icon-wrap" style="background:#f3e8fd"><span style="font-size:22px">🩸</span></div>
+      <div class="guide-info">
+        <div class="guide-title">출혈 지혈법</div>
+        <div class="guide-sub">상처 출혈 멈추는 방법</div>
+      </div>
+      <span class="badge badge-amber">주의</span>
+    </div>
+    <div class="guide-card" onclick="openDetail('fracture')">
+      <div class="guide-icon-wrap" style="background:#e0f7fa"><span style="font-size:22px">🦴</span></div>
+      <div class="guide-info">
+        <div class="guide-title">골절 응급처치</div>
+        <div class="guide-sub">뼈 부러졌을 때 고정 방법</div>
+      </div>
+      <span class="badge badge-green">일반</span>
+    </div>
+    <div class="guide-card" onclick="openDetail('shock')">
+      <div class="guide-icon-wrap" style="background:#e8f0fe"><span style="font-size:22px">⚡</span></div>
+      <div class="guide-info">
+        <div class="guide-title">쇼크 대응법</div>
+        <div class="guide-sub">혈액순환 급격히 저하될 때</div>
+      </div>
+      <span class="badge badge-red">긴급</span>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-btn active"><i class="ti ti-home" aria-hidden="true"></i>홈</button>
+    <button class="nav-btn"><i class="ti ti-search" aria-hidden="true"></i>검색</button>
+    <button class="nav-btn"><i class="ti ti-phone-call" aria-hidden="true"></i>신고</button>
+    <button class="nav-btn"><i class="ti ti-bookmark" aria-hidden="true"></i>저장</button>
+  </div>
+</div>
+
+<div class="detail-overlay" id="detailOverlay" role="dialog" aria-modal="true">
+  <div class="detail-box" id="detailBox">
+    <button class="detail-close" onclick="closeDetail()" aria-label="닫기"><i class="ti ti-x" aria-hidden="true"></i></button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<script>
+const guides = {
+  cardiac: {
+    icon:'❤️', bg:'#fce8e6', badge:'<span class="badge badge-red">최우선 긴급</span>',
+    title:'심폐소생술 (CPR)',
+    steps:[
+      {t:'119 신고 또는 주변에 도움 요청', warn:null},
+      {t:'반응 확인 — 어깨를 두드리며 "괜찮으세요?" 큰 소리로 확인', warn:null},
+      {t:'호흡 확인 — 10초 이내로 가슴 움직임 확인', warn:null},
+      {t:'흉부압박 시작 — 가슴 중앙(가슴뼈 아래 절반), 양손 깍지, 팔꿈치 펴고 수직으로 5~6cm 깊이 압박', warn:'분당 100~120회 속도 유지'},
+      {t:'인공호흡 (가능하면) — 30회 압박 후 2회 인공호흡. 불가능하면 압박만 지속', warn:null},
+      {t:'AED(자동심장충격기) 도착 즉시 전원 켜고 지시에 따라 사용', warn:null},
+      {t:'구급대원 도착할 때까지 중단 없이 반복', warn:null},
+    ],
+    tip:'구조호흡을 꺼리거나 훈련받지 않은 경우, 흉부압박만 실시해도 효과적입니다.'
+  },
+  choking: {
+    icon:'🫁', bg:'#fff3e0', badge:'<span class="badge badge-red">긴급</span>',
+    title:'기도폐쇄 / 하임리히법',
+    steps:[
+      {t:'기침 유도 — 본인이 기침할 수 있으면 스스로 강하게 기침하도록 유도', warn:null},
+      {t:'등 두드리기 — 허리를 앞으로 숙이게 하고 등 상부를 손바닥으로 5회 세게 두드림', warn:null},
+      {t:'하임리히법 — 뒤에서 팔로 감싸 명치 아래 주먹을 대고, 위쪽 후방으로 강하게 밀어 올리기 5회', warn:'임산부·영아는 흉부 압박으로 대체'},
+      {t:'이물질이 나올 때까지 등 두드리기 + 하임리히 교대 반복', warn:null},
+      {t:'의식 잃으면 즉시 CPR 시행 및 119 신고', warn:null},
+    ],
+    tip:'영아(1세 미만)는 등 두드리기 5회 + 흉부 압박 5회로 대처하세요.'
+  },
+  burn: {
+    icon:'🔥', bg:'#e6f4ea', badge:'<span class="badge badge-amber">주의</span>',
+    title:'화상 응급처치',
+    steps:[
+      {t:'열원 제거 — 즉시 불꽃·열원에서 벗어나고, 불붙은 옷은 즉시 제거', warn:null},
+      {t:'식히기 — 흐르는 찬물(15~20°C)로 최소 10~20분 냉각', warn:'얼음·된장·치약 절대 금지'},
+      {t:'덮기 — 깨끗한 거즈나 천으로 가볍게 덮어 감염 방지', warn:null},
+      {t:'수포(물집) 터뜨리지 않기 — 자연 소독막 역할', warn:null},
+      {t:'2도 이상(물집·깊은 화상)은 즉시 병원 이송', warn:'얼굴·손·발·생식기 화상은 즉시 전문 치료 필요'},
+    ],
+    tip:'화상 범위가 성인 손바닥(1%) 이상이거나 전기·화학 화상은 반드시 응급실을 방문하세요.'
+  },
+  fracture: {
+    icon:'🦴', bg:'#e0f7fa', badge:'<span class="badge badge-green">일반</span>',
+    title:'골절 응급처치',
+    steps:[
+      {t:'움직이지 않게 고정 — 골절 부위를 조심스럽게 현재 위치에서 고정', warn:'억지로 맞추거나 움직이지 말 것'},
+      {t:'부목 대기 — 신문지·막대기 등으로 골절 부위 위아래 관절을 포함해 고정', warn:null},
+      {t:'냉찜질 — 얼음을 천에 싸서 부종·통증 완화 (직접 피부 접촉 금지)', warn:null},
+      {t:'개방 골절 — 뼈가 피부 밖으로 나온 경우 건드리지 말고 깨끗한 천으로 덮기', warn:null},
+      {t:'119 신고 또는 즉시 병원 이송', warn:null},
+    ],
+    tip:'척추 골절 의심 시 절대 이동시키지 말고 119를 기다리세요.'
+  },
+  bleeding: {
+    icon:'🩸', bg:'#f3e8fd', badge:'<span class="badge badge-amber">주의</span>',
+    title:'출혈 지혈법',
+    steps:[
+      {t:'직접 압박 — 깨끗한 천·거즈로 상처를 강하게 5~10분 직접 압박', warn:'손으로 누를 경우 장갑 착용 권장'},
+      {t:'압박 유지 — 피가 배어도 천을 제거하지 말고 위에 덧댐', warn:null},
+      {t:'거상 — 가능하면 출혈 부위를 심장보다 높게 올리기', warn:null},
+      {t:'지혈대 (팔·다리 심한 출혈 시) — 상처 위쪽 5~10cm 묶고 시간 기록', warn:'지혈대는 최후 수단, 2시간 이내 해제'},
+      {t:'압박으로 지혈 안 되면 즉시 119 신고·응급실 이송', warn:null},
+    ],
+    tip:'내부 출혈 의심(복통·창백·혈압저하)은 즉시 119 신고 후 눕히고 체온을 유지하세요.'
+  },
+  shock: {
+    icon:'⚡', bg:'#e8f0fe', badge:'<span class="badge badge-red">긴급</span>',
+    title:'쇼크 대응법',
+    steps:[
+      {t:'119 즉시 신고', warn:null},
+      {t:'눕히기 — 평평한 곳에 눕히고 다리를 20~30cm 올려 혈액이 심장으로 돌아오게', warn:'두부·척추 손상 의심 시 다리 거상 금지'},
+      {t:'기도 확보 — 구토 시 옆으로 눕혀 기도 막힘 방지', warn:null},
+      {t:'체온 유지 — 담요나 옷으로 체온 보호, 과도한 열은 금지', warn:null},
+      {t:'음식·물 제공 금지 — 의식 있어도 아무것도 먹이지 않기', warn:null},
+      {t:'구급대원 도착까지 상태 관찰·안심', warn:null},
+    ],
+    tip:'쇼크 징후: 창백·차가운 피부, 빠르고 약한 맥박, 혼미, 호흡 빨라짐, 불안감'
+  }
+};
+
+function openDetail(key){
+  const g = guides[key];
+  let html = `<div class="detail-header">
+    <div class="detail-icon-big" style="background:${g.bg}"><span>${g.icon}</span></div>
+    <div class="detail-title-wrap">
+      <div class="detail-title">${g.title}</div>
+      <div class="detail-badge">${g.badge}</div>
+    </div>
+  </div><div class="steps">`;
+  g.steps.forEach((s,i)=>{
+    html+=`<div class="step"><div class="step-num">${i+1}</div><div><div class="step-text">${s.t}</div>${s.warn?`<div class="step-warn"><i class="ti ti-alert-circle" style="font-size:15px;flex-shrink:0;margin-top:1px" aria-hidden="true"></i>${s.warn}</div>`:''}</div></div>`;
+  });
+  html+=`</div><div class="tip-box"><div class="tip-title">💡 알아두세요</div>${g.tip}</div>`;
+  document.getElementById('detailContent').innerHTML=html;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');}
+document.getElementById('detailOverlay').addEventListener('click',function(e){if(e.target===this)closeDetail();});
+
+document.getElementById('searchInput').addEventListener('input',function(){
+  const q=this.value.trim().toLowerCase();
+  const cards=document.querySelectorAll('#guideList .guide-card');
+  cards.forEach(c=>{c.style.display=(!q||c.innerText.toLowerCase().includes(q))?'':'none';});
+});
+</script>
